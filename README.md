@@ -8,9 +8,9 @@ The core idea is simple: call the original R implementations (RobStatTM::locScal
 - Python wrappers:
   - `robstattm_py.loc_scale_m` → wraps `RobStatTM::locScaleM`
   - `robstattm_py.scale_m` → wraps `RobStatTM::scaleM`
-- Conversion utilities (list/NumPy/pandas/polars → R numeric vector)
+- Conversion utilities (list/NumPy/pandas/polars → R numeric vector) with dedicated pytest suite validating correct 1D array extraction for Pandas and Polars.
 - Validation scripts (R vs Python)
-- Pytest suite that compares wrapper outputs to direct R calls
+- Pytest suite that compares wrapper outputs to direct R calls, directly embedding and evaluating the official R CRAN documentation examples for verified accuracy.
 
 ## Requirements
 
