@@ -71,3 +71,87 @@ def test_missing_values_na_rm() -> None:
 
     for k in ["mu", "std_mu", "disper"]:
         assert np.allclose(py[k], r_py[k], rtol=0, atol=0)
+
+def test_cran_example_locScaleM_1() -> None:
+    """
+    R CRAN Example 1 for locScaleM:
+    set.seed(123)
+    r <- rnorm(150, sd=1.5)
+    locScaleM(r)
+    """
+    import rpy2.robjects as ro
+    ro.r("set.seed(123)")
+    r_data = ro.r("rnorm(150, sd=1.5)")
+    x = np.array(r_data)
+
+    py = loc_scale_m(x)
+
+    r_res = call_robstat_function("locScaleM", r_data)
+    r_py = {
+        "mu": r_scalar_to_float(r_res.rx2("mu")),
+        "std_mu": r_scalar_to_float(r_res.rx2("std.mu")),
+        "disper": r_scalar_to_float(r_res.rx2("disper")),
+    }
+
+    for k in ["mu", "std_mu", "disper"]:
+        assert np.allclose(py[k], r_py[k], rtol=0, atol=0)
+
+def test_cran_example_locScaleM_2() -> None:
+    """
+    R CRAN Example 2 for locScaleM:
+    # 10% of outliers, sd of good points is 1.5
+    set.seed(123)
+    r2 <- c(rnorm(135, sd=1.5), rnorm(15, mean=-10, sd=.5))
+    locScaleM(r2)
+    """
+    import rpy2.robjects as ro
+    ro.r("set.seed(123)")
+    r_data = ro.r("c(rnorm(135, sd=1.5), rnorm(15, mean=-10, sd=.5))")
+    x = np.array(r_data)
+
+    py = loc_scale_m(x)
+
+    r_res = call_robstat_function("locScaleM", r_data)
+    r_py = {
+        "mu": r_scalar_to_float(r_res.rx2("mu")),
+        "std_mu": r_scalar_to_float(r_res.rx2("std.mu")),
+        "disper": r_scalar_to_float(r_res.rx2("disper")),
+    }
+
+    for k in ["mu", "std_mu", "disper"]:
+        assert np.allclose(py[k], r_py[k], rtol=0, atol=0)
+
+def test_cran_example_scaleM_1() -> None:
+    """
+    R CRAN Example 1 for scaleM:
+    set.seed(123)
+    r <- rnorm(150, sd=1.5)
+    scaleM(r)
+    """
+    import rpy2.robjects as ro
+    ro.r("set.seed(123)")
+    r_data = ro.r("rnorm(150, sd=1.5)")
+    x = np.array(r_data)
+
+    py = scale_m(x)
+    r_val = r_scalar_to_float(call_robstat_function("scaleM", r_data))
+
+    assert np.allclose(py, r_val, rtol=0, atol=0)
+
+def test_cran_example_scaleM_2() -> None:
+    """
+    R CRAN Example 2 for scaleM:
+    # 10% of outliers, sd of good points is 1.5
+    set.seed(123)
+    r2 <- c(rnorm(135, sd=1.5), rnorm(15, mean=-5, sd=.5))
+    scaleM(r2, family='opt')
+    """
+    import rpy2.robjects as ro
+    ro.r("set.seed(123)")
+    r_data = ro.r("c(rnorm(135, sd=1.5), rnorm(15, mean=-5, sd=.5))")
+    x = np.array(r_data)
+
+    py = scale_m(x, family="opt")
+    r_val = r_scalar_to_float(call_robstat_function("scaleM", r_data, family="opt"))
+
+    assert np.allclose(py, r_val, rtol=0, atol=0)
